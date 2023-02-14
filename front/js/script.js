@@ -8,16 +8,32 @@ const pieces = await reponse.json();
 for (let i = 0; i < pieces.length; i++) {
 
     const article = pieces[i];
-    const imageElement = document.createElement("img");
+    let linkElement = document.createElement("a");
+    linkElement.className = "item-link-" + i;
+    let articleElement = document.createElement("article");
+    articleElement.className = "article-" + i;
+
+
+    let imageElement = document.createElement("img");
     imageElement.src = article.imageUrl;
-    const nomElement = document.createElement("h2");
-    nomElement.innerText = article.name;
-    const prixElement = document.createElement("p");
-    prixElement.innerText = article.price;
+    imageElement.alt = article.altTxt;
+    imageElement.id = article.imageUrl;
+    
+    let nameElement = document.createElement("h3");
+    nameElement.innerText = article.name;
+
+    let descriptionElement = document.createElement("p");
+    descriptionElement.innerText = article.description;
 
     //Rattachement de nos balises au DOM
-    const sectionFiches = document.querySelector(".items");
+    let link = document.querySelector(".items");
+    link.appendChild(linkElement);
+
+    let articles = document.querySelector(".item-link-" + i);
+    articles.appendChild(articleElement);
+
+    let sectionFiches = document.querySelector(".article-"+ i);
     sectionFiches.appendChild(imageElement);
-    sectionFiches.appendChild(nomElement);
-    sectionFiches.appendChild(prixElement);
+    sectionFiches.appendChild(nameElement);
+    sectionFiches.appendChild(descriptionElement);
 }
