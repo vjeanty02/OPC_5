@@ -10,9 +10,11 @@ for (let i = 0; i < pieces.length; i++) {
     const article = pieces[i];
     let linkElement = document.createElement("a");
     linkElement.className = "item-link-" + i;
+    linkElement.href = "./product.html?name=" + article._id;
+
     let articleElement = document.createElement("article");
     articleElement.className = "article-" + i;
-
+    
 
     let imageElement = document.createElement("img");
     imageElement.src = article.imageUrl;
@@ -37,3 +39,5 @@ for (let i = 0; i < pieces.length; i++) {
     sectionFiches.appendChild(nameElement);
     sectionFiches.appendChild(descriptionElement);
 }
+
+
