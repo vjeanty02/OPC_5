@@ -1,13 +1,13 @@
-// Récupération des pièces depuis le fichier JSON
+// Récupération des produits depuis le fichier JSON
 const reponse = await fetch('http://localhost:3000/api/products');
-const pieces = await reponse.json();
+const product = await reponse.json();
 
 
 // Création des balises 
+/*
+for (let i = 0; i < product.length; i++) {
 
-for (let i = 0; i < pieces.length; i++) {
-
-    const article = pieces[i];
+    const article = product[i];
     let linkElement = document.createElement("a");
     linkElement.className = "item-link-" + i;
     linkElement.href = "./product.html?name=" + article._id;
@@ -38,6 +38,16 @@ for (let i = 0; i < pieces.length; i++) {
     sectionFiches.appendChild(imageElement);
     sectionFiches.appendChild(nameElement);
     sectionFiches.appendChild(descriptionElement);
+
+
+}
+*/
+
+
+for (let i = 0; i < product.length; i++) {
+
+    const article = product[i];
+    document.getElementById("items").innerHTML += '<a href="./product.html?id='+ article._id +'"><article><img src="'+article.imageUrl+'" alt="Lorem ipsum dolor sit amet, Kanap name1"><h3 class="productName">'+article.name+'</h3><p class="productDescription">'+article.description+'</p></article></a>'
 }
 
 
