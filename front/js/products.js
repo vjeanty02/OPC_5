@@ -13,7 +13,7 @@ document.querySelector("#description").innerText = product.description;
 
 for (let i = 0; i < product.colors.length; i++) {
     const element = product.colors[i];
-    document.querySelector("#colors").innerHTML += '<option value="'+element+'">'+element+'</option>';
+    document.querySelector("colors").innerHTML += '<option value="'+element+'">'+element+'</option>';
 }
 
 
