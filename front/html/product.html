@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet" />
     <link href="../css/product.css" rel="stylesheet" />
+    <script type="module" src="../js/products.js"> </script>
+    <script type="module" src="../js/basket.js" ></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -65,20 +67,20 @@
                 <div class="item__content__settings__color">
                   <label for="color-select">Choisir une couleur :</label>
                   <select name="color-select" id="colors">
-                      <option value="">--SVP, choisissez une couleur --</option>
-<!--                       <option value="vert">vert</option>
+<!--                  <option value="">--SVP, choisissez une couleur --</option>    
+                      <option value="vert">vert</option>
                       <option value="blanc">blanc</option> -->
                   </select>
                 </div>
 
                 <div class="item__content__settings__quantity">
                   <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+                  <input type="number" name="itemQuantity" min="1" max="100" value="1" id="quantity">
                 </div>
               </div>
 
               <div class="item__content__addButton">
-                <button id="addToCart">Ajouter au panier</button>
+                <button id="addToCart" type="button" onclick="addToCart()">Ajouter au panier</button>
               </div>
 
             </div>
@@ -110,6 +112,10 @@
         </div>
       </div>
     </footer>
-  <script type="module" src="../js/products.js"></script>
+    <script>
+
+      
+    </script>
   </body>
+  
 </html>
