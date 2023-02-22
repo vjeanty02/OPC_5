@@ -1,4 +1,4 @@
-//Get the product's id to display
+//Get product id to display
 function getId(url) {
     return new URL(url).searchParams.get("id");
 }
