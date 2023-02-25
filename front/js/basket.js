@@ -1,4 +1,4 @@
-class Basket {
+export class Basket {
     constructor() {
         let basket = localStorage.getItem("basket");
         if (basket == null) {
@@ -48,17 +48,3 @@ class Basket {
         return total;
     }
 }
-function getProduct() {
-    let x = document.querySelector("#colors").selectedIndex;
-    let color = document.getElementsByTagName("option")[x].value;
-    let quantity = document.querySelector("#quantity").value;
-    let id = new URL(location.href).searchParams.get("id");
-    return { id: id, color: color, quantity: quantity };
-}
-function onClick() {
-    new Basket().add({ id: getProduct().id, "color": getProduct().color }, parseInt(getProduct().quantity));
-}
-function addToCart(){
-    document.getElementById("addToCart").addEventListener("click", onClick);
-}
-addToCart();
