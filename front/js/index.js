@@ -1,10 +1,10 @@
-// Get products from JSON file
-const response = await fetch('http://localhost:3000/api/products');
-const product = await response.json();
+import { getProductsfromJson } from './json.js';
+
+const products = getProductsfromJson();
 
 // Add products to homepage (index.html)
-for (let i = 0; i < product.length; i++) {
-    const article = product[i];
+for (let i = 0; i < products.length; i++) {
+    const article = products[i];
     document.querySelector('#items').innerHTML += `
     <a class="product-${i}" href="./product.html?id=">
         <article>

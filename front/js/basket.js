@@ -32,19 +32,24 @@ export class Basket {
             this.save();
         }
     }
-    getNumberProduct() {
+    getTotalProduct() {
         let number = 0;
         for (let product of this.basket) {
             number += product.quantity;
         }
         return number;
     }
-
     getTotalPrice() {
         let total = 0;
         for (let product of this.basket) {
             total += product.quantity * product.price;
         }
         return total;
+    }
+    getNumberProduct() {
+        return this.basket.length;
+    }
+    getProducts() {
+        return this.basket.filter(p => p == p);   
     }
 }
