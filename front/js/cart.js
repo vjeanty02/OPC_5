@@ -1,35 +1,32 @@
 import { Basket } from './basket.js';
 
-// Get products from JSON file
-const response = await fetch('http://localhost:3000/api/products');
-const product = await response.json()
-
 let basket = new Basket();
-function hideSelector(selector1, selector2,selector3){
+function hideSelector(selector1, selector2,selector3, selector4){
     document.querySelector(selector1).innerHtml = "";
     document.querySelector(selector2).style.display = 'none';
-    document.querySelector('#totalQuantity').innerHTML = "0";
+    document.querySelector(selector3).innerHTML = "0";
+    document.querySelector(selector4).innerHTML = "0";
 }
-function showSelector(selector1, selector2, selector3){
+function showSelector(selector1, selector2, selector3, selector4){
     document.querySelector(selector2).style.display = '';
     for (let i = 0; i < basket.getNumberProduct(); i++) {
-        
+        let product = basket.getProducts()[i];
         document.querySelector(selector1).innerHTML += `
-        <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
+        <article class="cart__item" data-id="${product.id}" data-color="${product.color}">
         <div class="cart__item__img">
-          <img src="../images/logo.png" alt="Photographie d'un canapé">
+          <img src="${product.url}" alt="Photographie d'un canapé">
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
-            <h2>Nom du produit</h2>
-            <p>Couleur : ${basket.getProducts()[i].color}</p>
-            <p>Prix : 42,00 €</p>
-            <p>Description : </p>
+            <h2>${product.name}</h2>
+            <p>Couleur : ${product.color}</p>
+            <p>Prix :  ${product.price} €</p>
+            <p class="description">Description : ${product.description}</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
               <p>Qté : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${basket.getProducts()[i].quantity}">
+              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
             </div>
             <div class="cart__item__content__settings__delete">
               <p class="deleteItem">Supprimer</p>
@@ -38,11 +35,28 @@ function showSelector(selector1, selector2, selector3){
         </div>
         </article>`;
         document.querySelector(selector3).innerHTML = basket.getTotalProduct();
+        document.querySelector(selector4).innerHTML = basket.getTotalPrice();
     }
 }
-if (basket.getNumberProduct() == 0) {
-    hideSelector("#cart__items",".cart__order",'#totalQuantity');
-} else {
-    showSelector("#cart__items",".cart__order",'#totalQuantity');
-}
 
+    if (basket.getNumberProduct() == 0) {
+        hideSelector("#cart__items",".cart__order",'#totalQuantity','#totalPrice');
+    } else {
+        showSelector("#cart__items",".cart__order",'#totalQuantity','#totalPrice');
+    }
+
+function removeProductOnClick() {
+    let products = document.querySelectorAll('.deleteItem');
+    for (let j = 0; j < products.length; j++) {
+        let product = products[j];
+        product.addEventListener('click', function(event) {
+            let productId = event.target.closest('article').getAttribute("data-id");
+            let productColor = event.target.closest('article').getAttribute("data-color"); 
+            alert(productId + " " + productColor);
+            basket.remove({id:productId, color:productColor});
+            location.reload();
+        })
+    }
+   
+}
+removeProductOnClick();

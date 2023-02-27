@@ -21,11 +21,11 @@ export class Basket {
         this.save()
     }
     remove(product) {
-        this.basket = this.basket.filter(p => p.id != product.id);
+        this.basket = this.basket.filter(p => p.id != product.id && p.color != product.color );
         this.save();
     }
     changeQuantity(product, quantity) {
-        let foundProduct = this.basket.find(p => p.id == product.id);
+        let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
         if (foundProduct.quantity <= 0) {
             this.remove(foundProduct);
         } else {
