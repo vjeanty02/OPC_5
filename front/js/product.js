@@ -1,5 +1,4 @@
 import { Basket } from './basket.js';
-import { getProductfromJson } from './json.js';
 
 //Get product id to display
 function getId(url) {
@@ -10,17 +9,25 @@ const products = await reponse.json();
 
 function getProduct() {
     let x = document.querySelector("#colors").selectedIndex;
-    let color = document.getElementsByTagName("option")[x].value;
-    let quantity = document.querySelector("#quantity").value;
-    let id = new URL(location.href).searchParams.get("id");
-    let name = document.querySelector("#title").innerText;
-    let description = document.querySelector("#description").innerText;
-    let price = document.querySelector("#price").innerText;
-    let url = document.querySelector("#item__img img").src;
-    return { id: id, color: color, quantity: quantity, name: name, description: description, price: price, url: url};
+    return { 
+        id: new URL(location.href).searchParams.get("id"), 
+        color: document.getElementsByTagName("option")[x].value, 
+        quantity: document.querySelector("#quantity").value, 
+        name: document.querySelector("#title").innerText, 
+        description: document.querySelector("#description").innerText, 
+        price: document.querySelector("#price").innerText, 
+        url: document.querySelector("#item__img img").src
+    };
 }
 function onClick() {
-    new Basket().add({ id: getProduct().id, "color": getProduct().color, "name": getProduct().name, "description": getProduct().description, "price": getProduct().price, "url": getProduct().url }, parseInt(getProduct().quantity));
+    new Basket().add({ 
+        id: getProduct().id, 
+        "color": getProduct().color, 
+        "name": getProduct().name, 
+        "description": getProduct().description, 
+        "price": getProduct().price, 
+        "url": getProduct().url 
+    }, parseInt(getProduct().quantity));
 }
 function addProductOnClick(){
     document.getElementById("addToCart").addEventListener("click", onClick);

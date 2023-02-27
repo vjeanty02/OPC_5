@@ -47,16 +47,32 @@ function showSelector(selector1, selector2, selector3, selector4){
 
 function removeProductOnClick() {
     let products = document.querySelectorAll('.deleteItem');
-    for (let j = 0; j < products.length; j++) {
-        let product = products[j];
+    for (let i = 0; i < products.length; i++) {
+        let product = products[i];
         product.addEventListener('click', function(event) {
-            let productId = event.target.closest('article').getAttribute("data-id");
-            let productColor = event.target.closest('article').getAttribute("data-color"); 
-            alert(productId + " " + productColor);
-            basket.remove({id:productId, color:productColor});
+            basket.remove({
+                id:event.target.closest('article').getAttribute("data-id"), 
+                color:event.target.closest('article').getAttribute("data-color")
+            });
             location.reload();
         })
     }
    
 }
+function changeProductOnClick() {
+    let products = document.querySelectorAll('.itemQuantity');
+    for (let i = 0; i < products.length; i++) {
+        let product = products[i];
+        product.addEventListener('change', function(event) {
+            basket.changeQuantity({
+                id:event.target.closest('article').getAttribute("data-id"), 
+                color:event.target.closest('article').getAttribute("data-color")
+            },parseInt(event.target.value));
+            location.reload();
+        })
+    }
+   
+}
+
 removeProductOnClick();
+changeProductOnClick();

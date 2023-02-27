@@ -1,5 +1,4 @@
 import { getProductsfromJson } from './json.js';
-
 const products = getProductsfromJson();
 
 // Add products to homepage (index.html)
