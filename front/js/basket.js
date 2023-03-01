@@ -78,17 +78,6 @@ export class Basket {
         return number;
     }
     /**
-     * Get the price of products.
-     * @return {number} The total value.
-     */
-    getTotalPrice() {
-        let total = 0;
-        for (let product of this.basket) {
-            total += product.quantity * product.price;
-        }
-        return total;
-    }
-    /**
      * Get the number(by Id) of product.
      * @return {number} The number value.
      */

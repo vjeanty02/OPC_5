@@ -21,13 +21,13 @@ function getProduct() {
         id: new URL(location.href).searchParams.get("id"), 
         color: document.getElementsByTagName("option")[x].value, 
         quantity: document.querySelector("#quantity").value, 
-        name: document.querySelector("#title").innerText, 
-        description: document.querySelector("#description").innerText, 
-        price: document.querySelector("#price").innerText, 
-        url: document.querySelector("#item__img img").src
+        // name: document.querySelector("#title").innerText, 
+        // description: document.querySelector("#description").innerText, 
+        // price: document.querySelector("#price").innerText, 
+        // url: document.querySelector("#item__img img").src
     };
     return product
-}
+} 
 /**
  * Add product in the basket (on click)
  */

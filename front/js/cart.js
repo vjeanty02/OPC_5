@@ -1,5 +1,7 @@
-
 import { Basket } from './basket.js';
+let quantity = 0;
+let price = 0;
+
 /**
  * hide selectors with display none
  * @param {[selector]} the ...selector value
@@ -29,20 +31,31 @@ function hideShow(){
  * Add html card to a selector
  * @param {selector} the selector value
  */
-function addCardTo(selector){
+async function addCardTo(selector){
+    
+price = 0;
+quantity = 0;
     for (let i = 0; i < new Basket().getNumberProduct(); i++) {
         let product = new Basket().getProducts()[i];
+        
+    const reponse = await fetch(`http://localhost:3000/api/products/${product.id}`);
+    const fullProduct = await reponse.json();
+        
+    quantity += product.quantity;
+    price += product.quantity * fullProduct.price;
+    console.log(product.quantity + " " + price);
+
         document.querySelector(selector).innerHTML += `
         <article class="cart__item" data-id="${product.id}" data-color="${product.color}">
         <div class="cart__item__img">
-          <img src="${product.url}" alt="Photographie d'un canapé">
+          <img src="${fullProduct.imageUrl}" alt="Photographie d'un canapé">
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
-            <h2>${product.name}</h2>
+            <h2>${fullProduct.name}</h2>
             <p>Couleur : ${product.color}</p>
-            <p>Prix :  ${product.price} €</p>
-            <p class="description">Description : ${product.description}</p>
+            <p>Prix :  ${fullProduct.price} €</p>
+            <p class="description">Description : ${fullProduct.description}</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
@@ -56,13 +69,15 @@ function addCardTo(selector){
         </div>
         </article>`;
     }
+addPriceAndQuantity(price, quantity);
+
 }
 /**
  * Add price and quantity to #totalQuantity and #totalPrice
  */
-function addPriceAndQuantity(){
-    document.querySelector('#totalQuantity').innerHTML = new Basket().getTotalProduct();
-    document.querySelector('#totalPrice').innerHTML = new Basket().getTotalPrice();
+function addPriceAndQuantity(price, quantity){
+    document.querySelector('#totalQuantity').innerHTML = quantity;
+    document.querySelector('#totalPrice').innerHTML = price;
 }
 /**
  * Remove product in the basket (on click)
@@ -136,7 +151,8 @@ function makeRequestBody()
 
 hideShow();
 addCardTo('#cart__items');
-addPriceAndQuantity();
+console.log(price)
+
 removeProductOnClick();
 changeProductOnClick();
 testInput('#firstName', '#firstNameErrorMsg', new RegExp("^[A-zÀ-ú \-]+$"));
