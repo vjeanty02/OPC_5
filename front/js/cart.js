@@ -1,3 +1,4 @@
+
 import { Basket } from './basket.js';
 /**
  * hide selectors with display none
@@ -55,8 +56,6 @@ function addCardTo(selector){
         </div>
         </article>`;
     }
-    hideShow();
-    alert(`Vous avez achetée du contenu au panier`);
 }
 /**
  * Add price and quantity to #totalQuantity and #totalPrice
@@ -77,7 +76,6 @@ function removeProductOnClick() {
                 id:e.target.closest('article').getAttribute("data-id"), 
                 color:e.target.closest('article').getAttribute("data-color")
             });
-            hideShow();
             addPriceAndQuantity();
             location.reload();
         })
@@ -119,7 +117,24 @@ function testInput(formSelec, msgErrorSelector, regExp){
     });
 }
 
+function makeRequestBody()
+{
+    let form = document.querySelector(".cart__order__form");
+    const body = {
+        contact: {
+            firstName:form.firstName.value,
+            lastName:form.lastName.value,
+            address:form.address.value,
+            city: form.city.value,
+            email: form.email.value,
+        },
+        products: ["8906dfda133f4c20a9d0e34f18adcf06"], 
+    };
+    return body;
+    
+}
 
+hideShow();
 addCardTo('#cart__items');
 addPriceAndQuantity();
 removeProductOnClick();
@@ -130,19 +145,26 @@ testInput('#address', '#addressErrorMsg', new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$"));
 testInput('#city', '#cityErrorMsg', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
 testInput('#email', '#emailErrorMsg', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
 
-fetch("http://localhost:3000/api/products/order", {
-        method: 'POST',
-        body: JSON.stringify(order),
-        headers: { 
-            'Accept': 'application/json', 
-            'Content-Type': 'application/json' 
-            },
-        })
-        .then((response) => response.json())
-        .then(async function (resultOrder) {
-            order = await resultOrder;
-            document.location.href = "confirmation.html?orderId=" + order.orderId;
-            localStorage.clear();
-        })
-    
+
+document.querySelector('#order').addEventListener('click', function(e) {
+    e.preventDefault();
+    const body = makeRequestBody();
+    fetch('http://localhost:3000/api/products/order', {
+		method: 'POST',
+		body: JSON.stringify(body),
+		headers: { 'Content-Type': 'application/json' },
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			const orderId = data.orderId;
+			window.location.href = 'confirmation.html?orderId=' + orderId;
+		})
+		.catch((err) => {
+			console.error(err);
+			alert('erreur: ' + err);
+		});
+})
+
+
+ 
 
