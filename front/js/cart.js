@@ -1,15 +1,37 @@
 import { Basket } from './basket.js';
-
+/**
+ * hide selectors with display none
+ * @param {[selector]} the ...selector value
+ */
 function hideSelectors(...selector) {
     for (const arg of selector) {
         document.querySelector(arg).style.display = 'none';
     }
   }
-function showSelector(selector1, selector2, selector3, selector4){
-    document.querySelector(selector2).style.display = '';
+/**
+ * Show selectors with display block
+ * @param {[selector]} the ...selector value
+ */
+function showSelectors(...selector) {
+    for (const arg of selector) {
+        document.querySelector(arg).style.display = '';
+    }
+}
+function hideShow(){
+    if (new Basket().getNumberProduct() == 0) {
+        hideSelectors("#cart__items",".cart__order",'#totalQuantity','#totalPrice');
+    } else {
+        showSelectors("#cart__items",".cart__order",'#totalQuantity','#totalPrice');
+    }
+}
+/**
+ * Add html card to a selector
+ * @param {selector} the selector value
+ */
+function addCardTo(selector){
     for (let i = 0; i < new Basket().getNumberProduct(); i++) {
         let product = new Basket().getProducts()[i];
-        document.querySelector(selector1).innerHTML += `
+        document.querySelector(selector).innerHTML += `
         <article class="cart__item" data-id="${product.id}" data-color="${product.color}">
         <div class="cart__item__img">
           <img src="${product.url}" alt="Photographie d'un canapé">
@@ -32,16 +54,17 @@ function showSelector(selector1, selector2, selector3, selector4){
           </div>
         </div>
         </article>`;
-        document.querySelector(selector3).innerHTML = new Basket().getTotalProduct();
-        document.querySelector(selector4).innerHTML = new Basket().getTotalPrice();
     }
+    hideShow();
+    alert(`Vous avez achetée du contenu au panier`);
 }
-
-    if (new Basket().getNumberProduct() == 0) {
-        hideSelectors("#cart__items",".cart__order");
-    } else {
-        showSelector("#cart__items",".cart__order",'#totalQuantity','#totalPrice');
-    }
+/**
+ * Add price and quantity to #totalQuantity and #totalPrice
+ */
+function addPriceAndQuantity(){
+    document.querySelector('#totalQuantity').innerHTML = new Basket().getTotalProduct();
+    document.querySelector('#totalPrice').innerHTML = new Basket().getTotalPrice();
+}
 /**
  * Remove product in the basket (on click)
  */
@@ -54,6 +77,8 @@ function removeProductOnClick() {
                 id:e.target.closest('article').getAttribute("data-id"), 
                 color:e.target.closest('article').getAttribute("data-color")
             });
+            hideShow();
+            addPriceAndQuantity();
             location.reload();
         })
     }
@@ -71,69 +96,53 @@ function changeProductOnClick() {
                 id:e.target.closest('article').getAttribute("data-id"), 
                 color:e.target.closest('article').getAttribute("data-color")
             },parseInt(e.target.value));
-            location.reload();
+            addPriceAndQuantity();
         })
     }
    
 }
+/**
+ * Test user input
+ * @param {selector} the formSelec value
+ * @param {selector} the msgErrorSelector value
+ * @param {RegExp} the regExp value
+ */
+function testInput(formSelec, msgErrorSelector, regExp){
+    let firstNameErrorMsg = document.querySelector(msgErrorSelector);
+    document.querySelector(formSelec).addEventListener('change', function(e) {
+        let value = e.target.value;
+        if (regExp.test(value)){
+            firstNameErrorMsg.innerHTML = '';
+        } else {
+            firstNameErrorMsg.innerHTML = 'Veuillez vérifier ce que vous avez entré.';
+        }
+    });
+}
 
-// Validation formulaire
-let form = document.querySelector(".cart__order__form");
 
-// REGEX
-var adressRegExp = new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$");
-var nameRegExp = new RegExp("^[A-zÀ-ú \-]+$");
-var emailRegExp = new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$");
-
-var firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
-form.firstName.addEventListener('change', function(e) {
-    var value = e.target.value;
-    if (nameRegExp.test(value)){
-        firstNameErrorMsg.innerHTML = '';
-    } else {
-        firstNameErrorMsg.innerHTML = 'Champ invalide, veuillez vérifier votre prénom.';
-    }
-});
-
-let lastNameErrorMsg = form.lastName.nextElementSibling;
-form.lastName.addEventListener('change', function(e) {
-    var value = e.target.value;
-    if (nameRegExp.test(value)){
-        lastNameErrorMsg.innerHTML = '';
-    } else {
-        lastNameErrorMsg.innerHTML = 'Champ invalide, veuillez vérifier votre nom.';
-    }
-});
-
-var adressErrorMsg = document.querySelector('#addressErrorMsg');
-form.address.addEventListener('change', function(e) {
-    var value = e.target.value;
-    if (adressRegExp.test(value)){
-        adressErrorMsg.innerHTML = '';
-    } else {
-        adressErrorMsg.innerHTML = 'Champ invalide, veuillez vérifier votre adresse postale.';
-    }
-});
-
-var cityErrorMsg = document.querySelector('#cityErrorMsg');
-form.city.addEventListener('change', function(e) {
-    var value = e.target.value;
-    if (nameRegExp.test(value)){
-        cityErrorMsg.innerHTML = '';
-    } else {
-        cityErrorMsg.innerHTML = 'Champ invalide, veuillez vérifier votre ville.';
-    }
-});
-
-var emailErrorMsg = document.querySelector('#emailErrorMsg');
-form.email.addEventListener('change', function(e) {
-    var value = e.target.value;
-    if (emailRegExp.test(value)){
-        emailErrorMsg.innerHTML = '';
-    } else {
-        emailErrorMsg.innerHTML = 'Champ invalide, veuillez vérifier votre adresse email.';
-    }
-});
-
+addCardTo('#cart__items');
+addPriceAndQuantity();
 removeProductOnClick();
 changeProductOnClick();
+testInput('#firstName', '#firstNameErrorMsg', new RegExp("^[A-zÀ-ú \-]+$"));
+testInput('#lastName', '#lastNameErrorMsg',new RegExp("^[A-zÀ-ú \-]+$"));
+testInput('#address', '#addressErrorMsg', new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$"));
+testInput('#city', '#cityErrorMsg', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
+testInput('#email', '#emailErrorMsg', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
+
+fetch("http://localhost:3000/api/products/order", {
+        method: 'POST',
+        body: JSON.stringify(order),
+        headers: { 
+            'Accept': 'application/json', 
+            'Content-Type': 'application/json' 
+            },
+        })
+        .then((response) => response.json())
+        .then(async function (resultOrder) {
+            order = await resultOrder;
+            document.location.href = "confirmation.html?orderId=" + order.orderId;
+            localStorage.clear();
+        })
+    
+
