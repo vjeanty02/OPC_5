@@ -50,19 +50,21 @@ export class Basket {
      * @param {number} The quantity value.
      */
     changeQuantity(product, quantity) {
-        if (!(quantity > 0 && quantity <= 100)) {
+        if (!(quantity > 0)) {
             quantity = 0;
+        }
+        else if (!( quantity <= 100)){
+            quantity = 100
         }
         let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
         if (foundProduct != undefined) {
             foundProduct.quantity = quantity;
-            if (foundProduct.quantity <= 0) {
+            if (foundProduct.quantity <= 0 || quantity <= 0) {
                 this.remove(foundProduct);
             } else {
                 this.save();
             }
-        }
-        
+        } 
     }
     /**
      * Get the number(by Quantity) of product.
@@ -101,7 +103,13 @@ export class Basket {
     getProducts() {
         let products = this.basket.filter(p => p == p)
         return products ;   
+    } 
+     /**
+     * Remove all products
+     */
+    removeAll() {
+        localStorage.removeItem("basket");
+        this.save();
     }
-    
 }
 
