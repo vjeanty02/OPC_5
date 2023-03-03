@@ -15,17 +15,13 @@ const products = await reponse.json();
  * Get product value
  * @returns {object} The product value
  */
-function getProduct() {
+function getProductFromHtml() {
     let x = document.querySelector("#colors").selectedIndex;
     let product ={ 
         id: new URL(location.href).searchParams.get("id"), 
         color: document.getElementsByTagName("option")[x].value, 
         quantity: document.querySelector("#quantity").value, 
-        // name: document.querySelector("#title").innerText, 
-        // description: document.querySelector("#description").innerText, 
-        // price: document.querySelector("#price").innerText, 
-        // url: document.querySelector("#item__img img").src
-    };
+};
     return product
 } 
 /**
@@ -34,13 +30,14 @@ function getProduct() {
 function addProductOnClick(){
     document.getElementById("addToCart").addEventListener("click", function(e) {
         new Basket().add({ 
-            id: getProduct().id, 
-            "color": getProduct().color, 
-            "name": getProduct().name, 
-            "description": getProduct().description, 
-            "price": getProduct().price, 
-            "url": getProduct().url 
-        }, parseInt(getProduct().quantity));
+            id: getProductFromHtml().id, 
+            "color": getProductFromHtml().color, 
+            "name": getProductFromHtml().name, 
+            "description": getProductFromHtml().description, 
+            "price": getProductFromHtml().price, 
+            "url": getProductFromHtml().url 
+        }, parseInt(getProductFromHtml().quantity));
+        alert(`Vous avez ajouté ${parseInt(getProductFromHtml().quantity)} produit(s) dans le panier`)
     });
 }
 

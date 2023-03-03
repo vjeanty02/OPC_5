@@ -18,23 +18,24 @@ export class Basket {
         localStorage.setItem("basket", JSON.stringify(this.basket));
     }
     /**
-     * Add a quantity of product in the basket
+     * Add a quantity (1-100) of product in the basket
      * @param {object} The product value.
      * @param {number} The quantity value.
      */
     add(product, quantity) {
-        if (!(quantity > 0 && quantity <= 100)) {
-            quantity = 0;
+        if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100) {
+            let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
+            if (foundProduct == undefined) {
+                product.quantity = quantity;
+                this.basket.push(product);
+            } else if(foundProduct.quantity + quantity > 100) {
+                foundProduct.quantity = 100;
+            } else {
+                foundProduct.quantity += quantity;
+            }
+            this.save()
+           
         }
-        let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
-        if (foundProduct != undefined) {
-            foundProduct.quantity += quantity;
-            
-        } else {
-            product.quantity = quantity;
-            this.basket.push(product);
-        }
-        this.save()
     }
     /**
      * Remove a product in the basket
@@ -45,45 +46,22 @@ export class Basket {
         this.save();
     }
     /**
-     * Change the quantity of product in the basket
+     * Change the quantity (1-100) of product in the basket
      * @param {object} The product value.
      * @param {number} The quantity value.
      */
     changeQuantity(product, quantity) {
-        if (!(quantity > 0)) {
-            quantity = 0;
+        if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100){
+            let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
+            if (foundProduct != undefined) {
+                foundProduct.quantity = quantity;
+                if (foundProduct.quantity <= 0 || quantity <= 0) {
+                    this.remove(foundProduct);
+                } else {
+                    this.save();
+                }
+            } 
         }
-        else if (!( quantity <= 100)){
-            quantity = 100
-        }
-        let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
-        if (foundProduct != undefined) {
-            foundProduct.quantity = quantity;
-            if (foundProduct.quantity <= 0 || quantity <= 0) {
-                this.remove(foundProduct);
-            } else {
-                this.save();
-            }
-        } 
-    }
-    /**
-     * Get the number(by Quantity) of product.
-     * @return {number} The number value.
-     */
-    getTotalProduct() {
-        let number = 0;
-        for (let product of this.basket) {
-            number += product.quantity;
-        }
-        return number;
-    }
-    /**
-     * Get the number(by Id) of product.
-     * @return {number} The number value.
-     */
-    getNumberProduct() {
-        let number = this.basket.length
-        return number;
     }
     /**
      * Get all products
@@ -93,7 +71,18 @@ export class Basket {
         let products = this.basket.filter(p => p == p)
         return products ;   
     } 
-     /**
+    /**
+     * Get the number(by Quantity) of product.
+     * @return {number} The total value.
+     */
+    getQuantityTotal() {
+        let total = 0;
+        for (let product of getProducts()) {
+            total += product.quantity;
+        }
+        return total;
+    }
+    /**
      * Remove all products
      */
     removeAll() {
@@ -101,4 +90,3 @@ export class Basket {
         this.save();
     }
 }
-
