@@ -1,12 +1,6 @@
 import { Basket } from './basket.js';
 
 let price = 0; let quantity = 0; 
-document.querySelector('#firstName').value = ''
-document.querySelector('#lastName').value = ''
-document.querySelector('#email').value = ''
-document.querySelector('#address').value = ''
-document.querySelector('#city').value = '';
-
 for (let i = 0; i < new Basket().getProducts().length; i++) {
     let product = new Basket().getProducts()[i];
     // Get products from JSON file
@@ -48,8 +42,9 @@ for (let i = 0; i < new Basket().getProducts().length; i++) {
     price += product.quantity * fullProduct.price;
 }
 
-displayPriceAndQuantity(price, quantity);
 hideShowItems();
+displayPriceAndQuantity(price, quantity);
+makeAllInputEmpty();
 removeProductOnClick();
 changeProductOnClick();
 verifyInputById('#firstName', '#firstNameErrorMsg', new RegExp("^[A-zÀ-ú \-]+$"));
@@ -57,31 +52,9 @@ verifyInputById('#lastName', '#lastNameErrorMsg',new RegExp("^[A-zÀ-ú \-]+$"))
 verifyInputById('#address', '#addressErrorMsg', new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$"));
 verifyInputById('#city', '#cityErrorMsg', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
 verifyInputById('#email', '#emailErrorMsg', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
+orderOnClick();
 
-// Submit the order if the fields have the correct values
-document.querySelector('#order').addEventListener('click', function (e) {
-    if (isInputsCorrect()) {
-        e.preventDefault();
-        const body = makeRequestBody();
-        fetch('http://localhost:3000/api/products/order', {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: { 'Content-Type': 'application/json' },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                const orderId = data.orderId;
-                window.location.href = 'confirmation.html?orderId=' + orderId;
-            })
-            .catch((err) => {
-                console.error(err);
-                alert('erreur: ' + err);
-            });
-    } else {
-        alert("Vous devez remplir correctement le formulaire avant de pouvoir commander"); 
-    }
-    
-})
+
 
 
 
@@ -89,6 +62,16 @@ document.querySelector('#order').addEventListener('click', function (e) {
 =            Functions            =
 =============================================*/
 
+/**
+ * Make all input empty
+ */
+function makeAllInputEmpty(){
+    document.querySelector('#firstName').value = ''
+    document.querySelector('#lastName').value = ''
+    document.querySelector('#email').value = ''
+    document.querySelector('#address').value = ''
+    document.querySelector('#city').value = '';
+}
 /**
  * hide selectors with display none
  * @param {[selector]} the ...selector value
@@ -228,4 +211,31 @@ function ids() {
         ids[i] = array[i].id;
     }
     return ids;
+}
+/**
+ * Submit the order if the fields have the correct values
+ */
+function orderOnClick(){
+    document.querySelector('#order').addEventListener('click', function (e) {
+        if (isInputsCorrect()) {
+            e.preventDefault();
+            const body = makeRequestBody();
+            fetch('http://localhost:3000/api/products/order', {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    const orderId = data.orderId;
+                    window.location.href = 'confirmation.html?orderId=' + orderId;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert('erreur: ' + err);
+                });
+        } else {
+            alert("Vous devez remplir correctement le formulaire avant de pouvoir commander"); 
+        }
+    })
 }

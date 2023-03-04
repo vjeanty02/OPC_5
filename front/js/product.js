@@ -28,6 +28,7 @@ function getProductFromHtml() {
  * Add product in the basket (on click)
  */
 function addProductOnClick(){
+    let quantity = parseInt(getProductFromHtml().quantity);
     document.getElementById("addToCart").addEventListener("click", function(e) {
         new Basket().add({ 
             id: getProductFromHtml().id, 
@@ -36,8 +37,13 @@ function addProductOnClick(){
             "description": getProductFromHtml().description, 
             "price": getProductFromHtml().price, 
             "url": getProductFromHtml().url 
-        }, parseInt(getProductFromHtml().quantity));
-        alert(`Vous avez ajouté ${parseInt(getProductFromHtml().quantity)} produit(s) dans le panier`)
+        }, quantity);
+        if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100) {
+            alert(`Vous avez ajouté ${quantity} produit(s) dans le panier`)
+        } else {
+            alert(`Vérifiez la quantité de produit, elle ne doit pas dépasser 100`)
+        }
+        
     });
 }
 
