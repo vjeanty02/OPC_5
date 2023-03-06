@@ -1,36 +1,18 @@
 import { Basket } from './basket.js';
+import { getProductfromJsonById } from './json.js';
+import { productsForCartPage } from './html.js';
 
 let price = 0; let quantity = 0; 
-for (let i = 0; i < new Basket().getProducts().length; i++) {
-    let product = new Basket().getProducts()[i];
-    // Get products from JSON file
-    const reponse = await fetch(`http://localhost:3000/api/products/${product.id}`);
-    const fullProduct = await reponse.json();
+let products = new Basket().getProducts();
     
-    // Add products to cartpage (cart.html)
-    document.querySelector('#cart__items').innerHTML += `
-    <article class="cart__item" data-id="${product.id}" data-color="${product.color}" data-quantity="${product.quantity}">
-    <div class="cart__item__img">
-    <img class="url-${i}" src="" alt="Photographie d'un canapé">
-    </div>
-    <div class="cart__item__content">
-    <div class="cart__item__content__description cart-${i}">
-        <h2></h2>
-        <p>Couleur : ${product.color}</p>
-        <p class="cart_price">Prix : € </p>
-        <p class="cart_description">Description : </p>
-    </div>
-    <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-        <p>Qté : </p>
-        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-        </div>
-        <div class="cart__item__content__settings__delete">
-        <p class="deleteItem">Supprimer</p>
-        </div>
-    </div>
-    </div>
-    </article>`;
+// Add products to cartpage (cart.html)
+document.querySelector('#cart__items').innerHTML = productsForCartPage(products);
+
+for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+
+    // Get products from JSON file
+    const fullProduct = getProductfromJsonById(product.id);
 
     // Add product description to product (cart.html)
     document.querySelector(`.url-${i}`).src = fullProduct.imageUrl;
@@ -53,10 +35,6 @@ verifyInputById('#address', '#addressErrorMsg', new RegExp("^[A-zÀ-ú0-9 ,.'\-]
 verifyInputById('#city', '#cityErrorMsg', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
 verifyInputById('#email', '#emailErrorMsg', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
 orderOnClick();
-
-
-
-
 
 /*=============================================
 =            Functions            =
@@ -100,8 +78,6 @@ function hideShowItems() {
         showItems("#cart__items", ".cart__order", '#totalQuantity', '#totalPrice');
     }
 }
-
-
 /**
  * Add price and quantity to #totalQuantity and #totalPrice
  */
@@ -125,7 +101,6 @@ function removeProductOnClick() {
             location.reload();
         })
     }
-
 }
 /**
  * Change product in the basket (on click)
@@ -143,7 +118,6 @@ function changeProductOnClick() {
         })
     }
 }
-
 /**
  * Verify user input with regex and show a error message 
  * @param {selector} the formSelec value
@@ -165,7 +139,7 @@ function verifyInputById(formSelec, msgErrorSelector, regExp){
  * Verify user input before ordering 
  * @returns {boolean} The isInputCorrect value
  */
-function isInputsCorrect()
+function isInputCorrect()
 {   
     let isInputCorrect = (document.querySelector('#firstNameErrorMsg').innerText == ''
     && document.querySelector('#lastNameErrorMsg').innerText == ''
@@ -217,7 +191,7 @@ function ids() {
  */
 function orderOnClick(){
     document.querySelector('#order').addEventListener('click', function (e) {
-        if (isInputsCorrect()) {
+        if (isInputCorrect()) {
             e.preventDefault();
             const body = makeRequestBody();
             fetch('http://localhost:3000/api/products/order', {

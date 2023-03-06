@@ -34,7 +34,9 @@ export class Basket {
                 foundProduct.quantity += quantity;
             }
             this.save()
-           
+        }
+        else{
+            throw new Error("La quantité doit être un nombre compris entre 1 et 100");
         }
     }
     /**
@@ -51,7 +53,7 @@ export class Basket {
      * @param {number} The quantity value.
      */
     changeQuantity(product, quantity) {
-        if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100){
+        if (Number.isInteger(quantity) && quantity >= 0 && quantity <= 100){
             let foundProduct = this.basket.find(p => p.id == product.id && p.color == product.color);
             if (foundProduct != undefined) {
                 foundProduct.quantity = quantity;
@@ -81,12 +83,5 @@ export class Basket {
             total += product.quantity;
         }
         return total;
-    }
-    /**
-     * Remove all products
-     */
-    removeAll() {
-        localStorage.removeItem("basket");
-        this.save();
     }
 }

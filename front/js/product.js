@@ -1,4 +1,27 @@
 import { Basket } from './basket.js';
+import { getProductfromJsonById } from './json.js';
+
+// Get products from JSON file
+const id = getId(location.href);
+const products = getProductfromJsonById(id);
+
+console.log()
+// Add product(descriptions) to product.html
+document.querySelector("#item__img img").src = products.imageUrl;
+document.querySelector("#title").innerText = products.name;
+document.querySelector("#price").innerText = products.price;
+document.querySelector("#description").innerText = products.description;
+for (let i = 0; i < products.colors.length; i++) {
+    const color = products.colors[i];
+    document.querySelector("#colors").innerHTML += `<option value="${color}">${color}</option>`;
+}
+addProductTocartOnClick();
+
+
+
+/*=============================================
+=            Functions            =
+=============================================*/
 
 /**
  * Get product id to display
@@ -8,53 +31,33 @@ import { Basket } from './basket.js';
 function getId(url) {
     return new URL(url).searchParams.get("id");
 }
-const reponse = await fetch(`http://localhost:3000/api/products/${getId(location.href)}`);
-const products = await reponse.json();
-
+/**
+ * add product to cart (on click)
+ */
+function addProductTocartOnClick(){
+    let quantity;
+    document.getElementById("addToCart").addEventListener("click", function(e) {
+        try {
+            quantity = parseInt(getProductFromUser().quantity);
+            new Basket().add({ 
+            id: getProductFromUser().id, 
+            "color": getProductFromUser().color
+        }, quantity);     
+        } catch (error) {
+            alert(error.message);
+        }   
+    });
+}
 /**
  * Get product value
  * @returns {object} The product value
  */
-function getProductFromHtml() {
+function getProductFromUser() {
     let x = document.querySelector("#colors").selectedIndex;
     let product ={ 
         id: new URL(location.href).searchParams.get("id"), 
         color: document.getElementsByTagName("option")[x].value, 
-        quantity: document.querySelector("#quantity").value, 
-};
+        quantity: document.querySelector("#quantity").value 
+    };
     return product
 } 
-/**
- * Add product in the basket (on click)
- */
-function addProductOnClick(){
-    let quantity = parseInt(getProductFromHtml().quantity);
-    document.getElementById("addToCart").addEventListener("click", function(e) {
-        new Basket().add({ 
-            id: getProductFromHtml().id, 
-            "color": getProductFromHtml().color, 
-            "name": getProductFromHtml().name, 
-            "description": getProductFromHtml().description, 
-            "price": getProductFromHtml().price, 
-            "url": getProductFromHtml().url 
-        }, quantity);
-        if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100) {
-            alert(`Vous avez ajouté ${quantity} produit(s) dans le panier`)
-        } else {
-            alert(`Vérifiez la quantité de produit, elle ne doit pas dépasser 100`)
-        }
-        
-    });
-}
-
-// Add product(descriptions) to product.html
-document.querySelector("#item__img img").src = products.imageUrl;
-document.querySelector("#title").innerText = products.name;
-document.querySelector("#price").innerText = products.price;
-document.querySelector("#description").innerText = products.description;
-for (let i = 0; i < products.colors.length; i++) {
-    const element = products.colors[i];
-    document.querySelector("#colors").innerHTML += `<option value="${element}">${element}</option>`;
-}
-
-addProductOnClick();
