@@ -8,9 +8,7 @@ let products = new Basket().getProducts();
 // Add products to cartpage (cart.html)
 document.querySelector('#cart__items').innerHTML = productsForCartPage(products);
 
-for (let i = 0; i < products.length; i++) {
-    const product = products[i];
-
+products.forEach((product,i) => {
     // Get products from JSON file
     const fullProduct = getProductfromJsonById(product.id);
 
@@ -22,18 +20,17 @@ for (let i = 0; i < products.length; i++) {
 
     quantity += product.quantity;
     price += product.quantity * fullProduct.price;
-}
+});
 
 hideShowItems();
 displayPriceAndQuantity(price, quantity);
-makeAllInputEmpty();
 removeProductOnClick();
 changeProductOnClick();
-verifyInputById('#firstName', '#firstNameErrorMsg', new RegExp("^[A-zÀ-ú \-]+$"));
-verifyInputById('#lastName', '#lastNameErrorMsg',new RegExp("^[A-zÀ-ú \-]+$"));
-verifyInputById('#address', '#addressErrorMsg', new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$"));
-verifyInputById('#city', '#cityErrorMsg', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
-verifyInputById('#email', '#emailErrorMsg', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
+verifyInputById('#firstName', new RegExp("^[A-zÀ-ú \-]+$"));
+verifyInputById('#lastName', new RegExp("^[A-zÀ-ú \-]+$"));
+verifyInputById('#address', new RegExp("^[A-zÀ-ú0-9 ,.'\-]+$"));
+verifyInputById('#city', new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$"));
+verifyInputById('#email', new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$"));
 orderOnClick();
 
 /*=============================================
@@ -42,13 +39,12 @@ orderOnClick();
 
 /**
  * Make all input empty
+ * @param {[selector]} the ...selector value
  */
-function makeAllInputEmpty(){
-    document.querySelector('#firstName').value = ''
-    document.querySelector('#lastName').value = ''
-    document.querySelector('#email').value = ''
-    document.querySelector('#address').value = ''
-    document.querySelector('#city').value = '';
+function makeAllInputEmpty(...selector){
+    for (const arg of selector) {
+        document.querySelector(selector).value = ''
+    }
 }
 /**
  * hide selectors with display none
@@ -73,9 +69,9 @@ function showItems(...selector) {
  */
 function hideShowItems() {
     if (new Basket().getProducts().length == 0) {
-        hideItems("#cart__items", ".cart__order", '#totalQuantity', '#totalPrice');
+        hideItems('#cart__items', '.cart__order', '#totalQuantity', '#totalPrice');
     } else {
-        showItems("#cart__items", ".cart__order", '#totalQuantity', '#totalPrice');
+        showItems('#cart__items', '.cart__order', '#totalQuantity', '#totalPrice');
     }
 }
 /**
@@ -91,24 +87,22 @@ function displayPriceAndQuantity(price, quantity) {
  */
 function removeProductOnClick() {
     let products = document.querySelectorAll('.deleteItem');
-    for (let i = 0; i < products.length; i++) {
-        let product = products[i];
+    products.forEach(product => {
         product.addEventListener('click', function (e) {
             new Basket().remove({
                 id: e.target.closest('article').getAttribute("data-id"),
                 color: e.target.closest('article').getAttribute("data-color")
             });
             location.reload();
-        })
-    }
+        }) 
+    });
 }
 /**
  * Change product in the basket (on click)
  */
 function changeProductOnClick() {
     let products = document.querySelectorAll('.itemQuantity');
-    for (let i = 0; i < products.length; i++) {
-        let product = products[i];
+    products.forEach(product => {
         product.addEventListener('change', function (e) {
             new Basket().changeQuantity({
                 id: e.target.closest('article').getAttribute("data-id"),
@@ -116,44 +110,20 @@ function changeProductOnClick() {
             }, parseInt(e.target.value));
             location.reload();
         })
-    }
+    });
 }
 /**
  * Verify user input with regex and show a error message 
  * @param {selector} the formSelec value
- * @param {selector} the msgErrorSelector value
  * @param {RegExp} the regExp value
  */
-function verifyInputById(formSelec, msgErrorSelector, regExp){
-    let ErrorMsg = document.querySelector(msgErrorSelector);
+function verifyInputById(formSelec, regExp){
+    makeAllInputEmpty(formSelec);
+    let errorMsg = document.querySelector(formSelec+'ErrorMsg');
     document.querySelector(formSelec).addEventListener('change', function(e) {
         let value = e.target.value;
-        if (regExp.test(value)){
-            ErrorMsg.innerHTML = '';
-        } else {
-            ErrorMsg.innerHTML = 'Veuillez vérifier ce que vous avez entré.';
-        }
+        errorMsg.innerHTML = regExp.test(value)? '':'Veuillez vérifier ce que vous avez entré.';
     });
-}
-/**
- * Verify user input before ordering 
- * @returns {boolean} The isInputCorrect value
- */
-function isInputCorrect()
-{   
-    let isInputCorrect = (document.querySelector('#firstNameErrorMsg').innerText == ''
-    && document.querySelector('#lastNameErrorMsg').innerText == ''
-    && document.querySelector('#emailErrorMsg').innerText == ''
-    && document.querySelector('#addressErrorMsg').innerText == ''
-    && document.querySelector('#cityErrorMsg').innerText == '')
-
-    && document.querySelector('#firstName').value != ''
-    && document.querySelector('#lastName').value != ''
-    && document.querySelector('#email').value != ''
-    && document.querySelector('#address').value != ''
-    && document.querySelector('#city').value != '';
-
-    return isInputCorrect;
 }
 /**
  * Make a command object (contact object, product array)
@@ -179,11 +149,11 @@ function makeRequestBody()
  * @returns {array}
  */
 function ids() {
-    let array = new Basket().getProducts()
+    let products = new Basket().getProducts()
     let ids = []
-    for (let i = 0; i < array.length; i++) {
-        ids[i] = array[i].id;
-    }
+    products.forEach((product,i) => {
+        ids[i] = product.id;
+    }); 
     return ids;
 }
 /**
@@ -209,7 +179,27 @@ function orderOnClick(){
                     alert('erreur: ' + err);
                 });
         } else {
-            alert("Vous devez remplir correctement le formulaire avant de pouvoir commander"); 
+            alert('Vous devez remplir correctement le formulaire avant de pouvoir commander'); 
         }
     })
+}
+/**
+ * Verify user input before ordering 
+ * @returns {boolean} The isInputCorrect value
+ */
+function isInputCorrect()
+{   
+    let isInputCorrect = (document.querySelector('#firstNameErrorMsg').innerText == ''
+    && document.querySelector('#lastNameErrorMsg').innerText == ''
+    && document.querySelector('#emailErrorMsg').innerText == ''
+    && document.querySelector('#addressErrorMsg').innerText == ''
+    && document.querySelector('#cityErrorMsg').innerText == '')
+
+    && document.querySelector('#firstName').value != ''
+    && document.querySelector('#lastName').value != ''
+    && document.querySelector('#email').value != ''
+    && document.querySelector('#address').value != ''
+    && document.querySelector('#city').value != '';
+
+    return isInputCorrect;
 }

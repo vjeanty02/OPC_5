@@ -3,18 +3,17 @@ import { getProductfromJsonById } from './json.js';
 
 // Get products from JSON file
 const id = getId(location.href);
-const products = getProductfromJsonById(id);
+const product = getProductfromJsonById(id);
 
 console.log()
 // Add product(descriptions) to product.html
-document.querySelector("#item__img img").src = products.imageUrl;
-document.querySelector("#title").innerText = products.name;
-document.querySelector("#price").innerText = products.price;
-document.querySelector("#description").innerText = products.description;
-for (let i = 0; i < products.colors.length; i++) {
-    const color = products.colors[i];
+document.querySelector("#item__img img").src = product.imageUrl;
+document.querySelector("#title").innerText = product.name;
+document.querySelector("#price").innerText = product.price;
+document.querySelector("#description").innerText = product.description;
+product.colors.forEach(color => {
     document.querySelector("#colors").innerHTML += `<option value="${color}">${color}</option>`;
-}
+});
 addProductTocartOnClick();
 
 
@@ -42,7 +41,8 @@ function addProductTocartOnClick(){
             new Basket().add({ 
             id: getProductFromUser().id, 
             "color": getProductFromUser().color
-        }, quantity);     
+        }, quantity);  
+        alert(`Vous avez ajouté ${quantity} produit(s)`);   
         } catch (error) {
             alert(error.message);
         }   

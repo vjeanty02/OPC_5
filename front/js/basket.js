@@ -5,11 +5,7 @@ export class Basket {
      */
     constructor() {
         let basket = localStorage.getItem("basket");
-        if (basket == null) {
-            this.basket = [];
-        } else {
-            this.basket = JSON.parse(basket);
-        }
+        this.basket = basket == null? [] : JSON.parse(basket);
     }
     /**
      * Save the basket to local storage.
