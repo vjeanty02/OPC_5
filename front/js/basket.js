@@ -15,8 +15,9 @@ export class Basket {
     }
     /**
      * Add a quantity (1-100) of product in the basket
-     * @param {object} The product value.
-     * @param {number} The quantity value.
+     * @param {{id:string, color:string}} product 
+     * @param {number} quantity 
+     * @throws Will throw an error if quantity is not a positive number < 100 .
      */
     add(product, quantity) {
         if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100) {
@@ -37,7 +38,7 @@ export class Basket {
     }
     /**
      * Remove a product in the basket
-     * @param {object} The product value.
+     * @param {{id:string, color:string}} product 
      */
     remove(product) {
         this.basket = this.basket.filter(p => p.id != product.id || (p.id == product.id && p.color != product.color ));
@@ -45,8 +46,8 @@ export class Basket {
     }
     /**
      * Change the quantity (1-100) of product in the basket
-     * @param {object} The product value.
-     * @param {number} The quantity value.
+     * @param {{id:string, color:string}} product
+     * @param {number} quantity 
      */
     changeQuantity(product, quantity) {
         if (Number.isInteger(quantity) && quantity >= 0 && quantity <= 100){
@@ -63,21 +64,10 @@ export class Basket {
     }
     /**
      * Get all products
-     * @return {Array} The products value.
+     * @return {{id:string, color:string, quantity:num}[]} 
      */
-    getProducts() {
+    get products() {
         let products = this.basket.filter(p => p == p)
         return products ;   
     } 
-    /**
-     * Get the number(by Quantity) of product.
-     * @return {number} The total value.
-     */
-    getQuantityTotal() {
-        let total = 0;
-        for (let product of getProducts()) {
-            total += product.quantity;
-        }
-        return total;
-    }
 }

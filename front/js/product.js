@@ -8,6 +8,7 @@ const product = getProductfromJsonById(id);
 console.log()
 // Add product(descriptions) to product.html
 document.querySelector("#item__img img").src = product.imageUrl;
+document.querySelector("#item__img img").alt = product.altTxt;
 document.querySelector("#title").innerText = product.name;
 document.querySelector("#price").innerText = product.price;
 document.querySelector("#description").innerText = product.description;
@@ -17,15 +18,13 @@ product.colors.forEach(color => {
 addProductTocartOnClick();
 
 
-
 /*=============================================
 =            Functions            =
 =============================================*/
-
 /**
  * Get product id to display
- * @param {url} The url value.
- * @returns {string}
+ * @param {string} url 
+ * @returns {URL}
  */
 function getId(url) {
     return new URL(url).searchParams.get("id");
@@ -50,7 +49,7 @@ function addProductTocartOnClick(){
 }
 /**
  * Get product value
- * @returns {object} The product value
+ * @returns {{id:string, color:string, quantity:num}}
  */
 function getProductFromUser() {
     let x = document.querySelector("#colors").selectedIndex;
@@ -60,4 +59,4 @@ function getProductFromUser() {
         quantity: document.querySelector("#quantity").value 
     };
     return product
-} 
+}

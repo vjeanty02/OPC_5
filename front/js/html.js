@@ -1,11 +1,10 @@
 /*=============================================
 =            Functions            =
 =============================================*/
-
 /**
- * Generate html code of products for cart page
- * @param {Array} The products value.
- * @returns {string} The element value.
+ * Generate products html code from local storage (for cart page)
+ * @param {{color:string, id:string, quantity:number}[]} products
+ * @returns {string}
  */
 export function productsForCartPage(products){
     let element = ``;
@@ -36,9 +35,9 @@ export function productsForCartPage(products){
     return element;
 }
 /**
- * Generate html code of products for index page
- * @param {Array} The products value.
- * @returns {string} The element value.
+ * Generate products html code from json file (for index page)
+ * @param {{colors:string[], _id:string, name:string, price:number, imageUrl:string, description:string, altTxt:string}[]} products
+ * @returns {string}
  */
 export function productsForIndexPage(products){
     let element = ``;

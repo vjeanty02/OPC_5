@@ -3,7 +3,7 @@ import { getProductfromJsonById } from './json.js';
 import { productsForCartPage } from './html.js';
 
 let price = 0; let quantity = 0; 
-let products = new Basket().getProducts();
+let products = new Basket().products;
     
 // Add products to cartpage (cart.html)
 document.querySelector('#cart__items').innerHTML = productsForCartPage(products);
@@ -36,10 +36,9 @@ orderOnClick();
 /*=============================================
 =            Functions            =
 =============================================*/
-
 /**
  * Make all input empty
- * @param {[selector]} the ...selector value
+ * @param {Array} ...selector 
  */
 function makeAllInputEmpty(...selector){
     for (const arg of selector) {
@@ -48,7 +47,7 @@ function makeAllInputEmpty(...selector){
 }
 /**
  * hide selectors with display none
- * @param {[selector]} the ...selector value
+ * @param {Array} ...selector
  */
 function hideItems(...selector) {
     for (const arg of selector) {
@@ -57,7 +56,7 @@ function hideItems(...selector) {
 }
 /**
  * Show selectors with display block
- * @param {[selector]} the ...selector value
+ * @param {Array} ...selector
  */
 function showItems(...selector) {
     for (const arg of selector) {
@@ -68,7 +67,7 @@ function showItems(...selector) {
  * Show or hide the contents of the basket
  */
 function hideShowItems() {
-    if (new Basket().getProducts().length == 0) {
+    if (new Basket().products.length == 0) {
         hideItems('#cart__items', '.cart__order', '#totalQuantity', '#totalPrice');
     } else {
         showItems('#cart__items', '.cart__order', '#totalQuantity', '#totalPrice');
@@ -76,6 +75,8 @@ function hideShowItems() {
 }
 /**
  * Add price and quantity to #totalQuantity and #totalPrice
+ * @param {number} price
+ * @param {number} quantity
  */
 function displayPriceAndQuantity(price, quantity) {
 
@@ -114,20 +115,28 @@ function changeProductOnClick() {
 }
 /**
  * Verify user input with regex and show a error message 
- * @param {selector} the formSelec value
- * @param {RegExp} the regExp value
+ * @param {string} selector selector must be an html selector
+ * @param {RegExp} regExp regExp must be a regular epression
  */
-function verifyInputById(formSelec, regExp){
-    makeAllInputEmpty(formSelec);
-    let errorMsg = document.querySelector(formSelec+'ErrorMsg');
-    document.querySelector(formSelec).addEventListener('change', function(e) {
+function verifyInputById(selector, regExp){
+    makeAllInputEmpty(selector);
+    let errorMsg = document.querySelector(selector+'ErrorMsg');
+    document.querySelector(selector).addEventListener('change', function(e) {
         let value = e.target.value;
         errorMsg.innerHTML = regExp.test(value)? '':'Veuillez vérifier ce que vous avez entré.';
     });
 }
 /**
+ * @typedef {Object} contact
+ * @property {string} firstName
+ * @property {string} lastName
+ * @property {string} address
+ * @property {string} city
+ * @property {string} email
+ */
+/**
  * Make a command object (contact object, product array)
- * @returns {object} the body value
+ * @returns {{contact, products:string[]}}
  */
 function makeRequestBody()
 {
@@ -146,10 +155,10 @@ function makeRequestBody()
 }
 /**
  * Returns an array of all item IDs in the cart
- * @returns {array}
+ * @returns {string[]}
  */
 function ids() {
-    let products = new Basket().getProducts()
+    let products = new Basket().products
     let ids = []
     products.forEach((product,i) => {
         ids[i] = product.id;
