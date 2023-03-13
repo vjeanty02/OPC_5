@@ -16,7 +16,6 @@ products.forEach((product,i) => {
     document.querySelector(`.url-${i}`).src = fullProduct.imageUrl;
     document.querySelector(`.cart-${i} h2`).innerText += fullProduct.name;
     document.querySelector(`.cart-${i} .cart_price`).innerText += fullProduct.price;
-    document.querySelector(`.cart-${i} .cart_description`).innerText += fullProduct.description;
 
     quantity += product.quantity;
     price += product.quantity * fullProduct.price;
